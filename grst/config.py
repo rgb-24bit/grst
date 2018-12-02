@@ -44,36 +44,36 @@ class RepositoryConfig(object):
 
         return True
 
-    def get_name(self, path):
+    def get_by_path(self, path):
         """Get the name corresponding to the path."""
         return self.paths.get(path)
 
-    def get_path(self, name):
+    def get_by_name(self, name):
         """Get the path corresponding to the name."""
         return self.names.get(name)
 
-    def set_name(self, path, new_name):
+    def set_by_path(self, path, new_name):
         """Set the name of the corresponding path to the new value."""
         old_name = self.path.get(path)
         if old_name is not None:
             del self.names[old_name]
             self.names[new_name] = path
 
-    def set_path(self, name, new_path):
+    def set_by_name(self, name, new_path):
         """Set the path of the corresponding name to the new value."""
         old_path = self.names.get(name)
         if old_path is not None:
             del self.paths[old_path]
             self.paths[new_path] = name
 
-    def del_name(self, name):
+    def del_by_name(self, name):
         """Delete the configuration item corresponding to the specified name."""
         path = self.names.get(name)
         if path is not None:
             del self.names[name]
             del self.paths[path]
 
-    def del_path(self, path):
+    def del_by_path(self, path):
         """Delete the configuration item corresponding to the specified path."""
         name = self.paths.get(path)
         if name is not None:
