@@ -52,6 +52,7 @@ class Repository(object):
         self._repo = pygit2.Repository(path)
         self._path = os.path.abspath(path)
         self._name = name
+        self._status = Status(self._repo)
 
     def get_name(self):
         """Returns the name of the repository."""
@@ -70,5 +71,74 @@ class Repository(object):
             return 'HEAD detached at %s' % head
         return self._repo.head.shorthand
 
+    def get_status(self):
+        """Get the status information of the repository.
+
+        The meaning of the return value is shown in the class Status.
+        """
+        return self._status.get_status()
+
     def __repr__(self):
         return 'Repository(%s)' % self._name
+
+
+class Status(object):
+    """Abstraction of repository state information.
+
+    Args:
+        repo: A pygit2.Repository object.
+
+    Status Type:
+        STATUS_PERFECT: The work tree is clean and synchronized with the tracked branch.
+        STATUS_CLEAN: The work tree is clean.
+        STATUS_CHANGE: Uncommitted changes in the work tree.
+    """
+
+    STATUS_PERFECT = 0
+    STATUS_CLEAN = 1
+    STATUS_CHANGE = 2
+
+    def __init__(self, repo):
+        self._repo = repo
+
+    def get_status(self):
+        """Get the status of the repository."""
+        if self._is_clean():
+            if self._is_perfect():
+                return Status.STATUS_PERFECT
+            return Status.STATUS_CLEAN
+        return Status.STATUS_CHANGE
+
+    def _is_clean(self):
+        """Determine if the repository work tree is clean."""
+        # https://libgit2.org/libgit2/ex/HEAD/status.html
+        not_clean_status = {
+            GIT_STATUS_INDEX_NEW,
+            GIT_STATUS_INDEX_MODIFIED,
+            GIT_STATUS_INDEX_DELETED,
+            GIT_STATUS_INDEX_RENAMED,
+            GIT_STATUS_INDEX_TYPECHANGE,
+            GIT_STATUS_WT_NEW,
+            GIT_STATUS_WT_MODIFIED,
+            GIT_STATUS_WT_DELETED,
+            GIT_STATUS_WT_RENAMED,
+            GIT_STATUS_WT_TYPECHANGE,
+        }
+        cur_repo_status = set(self._repo.status().values())
+        return len(not_clean_status & cur_repo_status) == 0
+
+    def _is_perfect(self):
+        """Determine if the current branch and the remote branch are synchronized.
+
+        If you are tracking a remote branch, it returns True by default.
+        """
+        # https://www.pygit2.org/references.html#the-branch-type
+        for branch in self._repo.branches:
+            if self._repo.branches[branch].is_head():
+                head_branch = self._repo.branches[branch]
+                break
+
+        if head_branch.upstream:
+            return head_branch.target == head_branch.upstream.target
+        else:
+            return True
