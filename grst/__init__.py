@@ -11,3 +11,9 @@ Get status information showing the local git repository
 from .__version__ import __version__, __description__
 from .__version__ import __author__, __author_email__
 from .__version__ import __license__, __copyright__
+
+from grst.cli import cli
+
+
+if __name__ == '__main__':
+    cli()
