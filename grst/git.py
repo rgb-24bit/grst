@@ -48,17 +48,10 @@ class Repository(object):
     Note:
         If the path is invalid, an exception will be thrown `_pygit2.GitError`.
     """
-    def __init__(self, path, name=None):
+    def __init__(self, path):
         self._repo = pygit2.Repository(path)
         self._path = os.path.abspath(path)
-        self._name = name
         self._status = Status(self._repo)
-
-    def get_name(self):
-        """Returns the name of the repository."""
-        if self._name is None:
-            self._name = os.path.basename(self._path)
-        return self._name
 
     def get_path(self):
         """Returns the absolute path of the repository."""
@@ -79,7 +72,7 @@ class Repository(object):
         return self._status.get_status()
 
     def __repr__(self):
-        return 'Repository(%s)' % self._name
+        return 'Repository(%s)' % self._path
 
 
 class Status(object):
