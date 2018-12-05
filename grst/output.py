@@ -34,16 +34,15 @@ def status(repo):
     Args:
         repo: The `grst.git.Repository` object.
     """
-    out_fmt = '{path} {branch} -> {name}'
+    out_format = '{status_prefix} {path} ({branch})'
 
-    path = click.style(repo.get_path(), fg='white')
-    name = click.style(repo.get_name(), fg='white')
-
-    branch_name = repo.get_branch()
-    branch = {
-        Status.STATUS_PERFECT: click.style('(%s)' % branch_name, fg='white'),
-        Status.STATUS_CLEAN: click.style('(%s)' % branch_name, fg='yellow'),
-        Status.STATUS_CHANGE: click.style('(%s)' % branch_name, fg='red')
+    path = repo.get_path()
+    branch = repo.get_branch()
+    status_prefix = {
+        Status.STATUS_PERFECT: click.style('-', fg='green'),
+        Status.STATUS_CLEAN: click.style('*', fg='yellow'),
+        Status.STATUS_CHANGE: click.style('#', fg='red')
     }.get(repo.get_status())
 
-    click.echo(out_fmt.format(path=path, branch=branch, name=name))
+    click.echo(out_format.format(status_prefix=status_prefix,
+                                 path=path, branch=branch))
