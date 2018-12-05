@@ -36,7 +36,7 @@ def status(repo):
     """
     status_prefix = {
         Status.STATUS_SYNC: click.style('S', fg='green'),
-        Status.STATUS_CLEAN: click.style('C', fg='yellow'),
+        Status.STATUS_CLEAN: click.style('C', fg='blue'),
         Status.STATUS_MODIFY: click.style('M', fg='red')
     }.get(repo.get_status())
     path = repo.get_path()

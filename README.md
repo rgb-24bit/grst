@@ -28,9 +28,9 @@ status_prefix path (branch)
 Among them, the possible values of `status_prefix` indicate:
 
 ```
-S(Green)  - The work tree is clean and synchronized with the tracked branch.
-C(Yellow) - The work tree is clean but not synchronized with the tracked branch.
-M(Red)    - Uncommitted changes in the work tree.
+S(Green) - The work tree is clean and synchronized with the tracked branch.
+C(Blue)  - The work tree is clean but not synchronized with the tracked branch.
+M(Red)   - Uncommitted changes in the work tree.
 ```
 
 In particular, if the local branch is to track remote branches, then `C` will be upgraded to `S`.
