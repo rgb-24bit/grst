@@ -82,14 +82,14 @@ class Status(object):
         repo: A pygit2.Repository object.
 
     Status Type:
-        STATUS_PERFECT: The work tree is clean and synchronized with the tracked branch.
+        STATUS_SYNC: The work tree is clean and synchronized with the tracked branch.
         STATUS_CLEAN: The work tree is clean.
-        STATUS_CHANGE: Uncommitted changes in the work tree.
+        STATUS_MODIFY: Uncommitted changes in the work tree.
     """
 
-    STATUS_PERFECT = 0
+    STATUS_SYNC = 0
     STATUS_CLEAN = 1
-    STATUS_CHANGE = 2
+    STATUS_MODIFY = 2
 
     def __init__(self, repo):
         self._repo = repo
@@ -97,10 +97,10 @@ class Status(object):
     def get_status(self):
         """Get the status of the repository."""
         if self._is_clean():
-            if self._is_perfect():
-                return Status.STATUS_PERFECT
+            if self._is_sync():
+                return Status.STATUS_SYNC
             return Status.STATUS_CLEAN
-        return Status.STATUS_CHANGE
+        return Status.STATUS_MODIFY
 
     def _is_clean(self):
         """Determine if the repository work tree is clean."""
@@ -117,10 +117,10 @@ class Status(object):
             GIT_STATUS_WT_RENAMED,
             GIT_STATUS_WT_TYPECHANGE,
         }
-        cur_repo_status = set(self._repo.status().values())
-        return len(not_clean_status & cur_repo_status) == 0
+        curr_repo_status = set(self._repo.status().values())
+        return len(not_clean_status & curr_repo_status) == 0
 
-    def _is_perfect(self):
+    def _is_sync(self):
         """Determine if the current branch and the remote branch are synchronized.
 
         If you are tracking a remote branch, it returns True by default.
