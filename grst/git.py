@@ -123,7 +123,7 @@ class Status(object):
     def _is_sync(self):
         """Determine if the current branch and the remote branch are synchronized.
 
-        If you are tracking a remote branch, it returns True by default.
+        If you have not tracked the remote branch, False is returned by default.
         """
         # https://www.pygit2.org/references.html#the-branch-type
         for branch in self._repo.branches:
@@ -134,4 +134,4 @@ class Status(object):
         if head_branch.upstream:
             return head_branch.target == head_branch.upstream.target
         else:
-            return True
+            return False
