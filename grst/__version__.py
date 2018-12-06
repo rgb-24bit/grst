@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-__version__ = '1.0.0'
+__version__ = '1.0.1'
 __description__ = 'Get status information showing the local git repository.'
 __author__ = 'rgb-24bit'
 __author_email__ = 'rgb-24bit@foxmail.com'

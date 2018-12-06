@@ -1,3 +1,9 @@
+1.0.1 (2018-12-06)
+++++++++++++++++++
+
+* Make the repository state S of the remote branch not tracked as False
+* The status command supports more options
+
 1.0.0 (2018-12-05)
 ++++++++++++++++++
 
