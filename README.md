@@ -17,6 +17,8 @@ Commands:
   status  Check the status of the repository.
 ```
 
+
+
 #### Output ####
 
 The output format of grst is:
@@ -33,7 +35,19 @@ C(Blue)  - The work tree is clean but not synchronized with the tracked branch.
 M(Red)   - Uncommitted changes in the work tree.
 ```
 
-In particular, if the local branch is to track remote branches, then `C` will be upgraded to `S`.
+In particular, if the local branch is to track remote branches, its status is up to `C`.
+
+You can specify which repository to list by specifying the options for the status command:
+
+```
+Usage: grst status [OPTIONS]
+
+Options:
+  -s, --sync    List only the repository for the status bit Sync.
+  -c, --clean   List only the repository for the status bit Clean.
+  -m, --modify  List only the repository for the status bit Modify.
+  --help        Show this message and exit.
+```
 
 For local branches that do not track remote branches, you can make them track remote branches by the following command:
 

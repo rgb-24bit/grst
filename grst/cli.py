@@ -15,7 +15,7 @@ import click
 from grst import output
 from grst.userepository import GRST_USER_FILE
 from grst.userepository import get_user_repository, save_user_repository
-from grst.git import Repository, is_repository
+from grst.git import Repository, Status, is_repository
 from grst.__version__ import __version__
 
 
@@ -37,9 +37,31 @@ def add(path):
 
 
 @click.command(short_help="Check the status of the repository.")
-def status():
-    for repo in get_user_repository(GRST_USER_FILE):
-        output.status(Repository(repo))
+@click.option('-s', '--sync', is_flag=True,
+              help='List only the repository for the status bit Sync.')
+@click.option('-c', '--clean', is_flag=True,
+              help='List only the repository for the status bit Clean.')
+@click.option('-m', '--modify', is_flag=True,
+              help='List only the repository for the status bit Modify.')
+def status(sync, clean, modify):
+    status_set = set()
+
+    if sync:
+        status_set.add(Status.STATUS_SYNC)
+    if clean:
+        status_set.add(Status.STATUS_CLEAN)
+    if modify:
+        status_set.add(Status.STATUS_MODIFY)
+
+    # List all repositories if no selection is specified
+    if len(status_set) == 0:
+        for repo_path in get_user_repository(GRST_USER_FILE):
+            output.status(Repository(repo_path))
+    else:
+        for repo_path in get_user_repository(GRST_USER_FILE):
+            repo_obj = Repository(repo_path)
+            if repo_obj.get_status() in status_set:
+                output.status(repo_obj)
 
 
 @click.command(short_help="Remove the repository from grst.")
