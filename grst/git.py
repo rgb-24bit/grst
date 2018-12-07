@@ -93,9 +93,17 @@ class Status(object):
 
     def __init__(self, repo):
         self._repo = repo
+        self._status = None
 
     def get_status(self):
         """Get the status of the repository."""
+        # Obtaining status is a relatively time consuming operation,
+        # through _status cache status, not repeated acquisition
+        if self._status is None:
+            self._status = self._get_status()
+        return self._status
+
+    def _get_status(self):
         if self._is_clean():
             if self._is_sync():
                 return Status.STATUS_SYNC
