@@ -27,7 +27,7 @@ class UserRepository(object):
 
     def add(self, path):
         path = self.absposix(path)
-        if os.path.isdir(path):
+        if os.path.isdir(os.path.join(path, '.git')):
             self.repositories.add(path)
 
     def remove(self, path):
