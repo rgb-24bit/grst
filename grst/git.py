@@ -37,6 +37,28 @@ def is_repository(path):
     return os.path.isdir(os.path.join(path, '.git'))
 
 
+def find_repository(path, depth, submodule):
+    """Find subdirectories recursively in the repository.
+
+    Args:
+        path: To find the parent directory.
+        depth: Find depth.
+        submodule: Whether searching submodule.
+    """
+    if depth > 0:
+        for subitem in os.listdir(path):
+            if subitem == '.git':
+                continue
+            subpath = os.path.join(path, subitem)
+            if os.path.isdir(subpath):
+                if is_repository(subpath):
+                    yield subpath
+                    if submodule:
+                        yield from find_repository(subpath, depth - 1, submodule)
+                else:
+                    yield from find_repository(subpath, depth - 1, submodule)
+
+
 class Repository(object):
     """A simplified git repository object.
 

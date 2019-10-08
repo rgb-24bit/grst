@@ -15,7 +15,7 @@ import click
 from grst import output
 from grst.userepository import GRST_USER_FILE
 from grst.userepository import get_user_repository, save_user_repository
-from grst.git import Repository, Status, is_repository
+from grst.git import Repository, Status, is_repository, find_repository
 from grst.__version__ import __version__
 
 
@@ -27,13 +27,20 @@ def cli():
 
 @click.command(short_help="Add the repository.")
 @click.argument('path', default='.', nargs=1, type=click.Path())
-def add(path):
+@click.option('-r', '--recursion', is_flag=True,
+              help='Recursive lookup repository.')
+@click.option('-d', '--depth', default=1,
+              help='Recursive depth')
+@click.option('-s', '--submodule', is_flag=True,
+              help='Whether searching submodule.')
+def add(path, recursion, depth, submodule):
+    user_repo = get_user_repository(GRST_USER_FILE)
     if is_repository(path):
-        user_repo = get_user_repository(GRST_USER_FILE)
         user_repo.add(path)
-        save_user_repository(user_repo, GRST_USER_FILE)
-    else:
-        output.error('Not a git repository.')
+    if recursion:
+        for repo in find_repository(path, depth, submodule):
+            user_repo.add(repo)
+    save_user_repository(user_repo, GRST_USER_FILE)
 
 
 @click.command(short_help="Check the status of the repository.")
